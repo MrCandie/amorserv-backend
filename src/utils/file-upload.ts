@@ -9,14 +9,15 @@ async function uploadFile(req: any, folder: string, next: NextFunction) {
     if (!req.files.image) {
       return next(new AppError("Upload a valid image", 400));
     }
+
     result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
       use_filename: true,
+      pages: true,
       folder: folder,
     });
   } else {
     result = "";
   }
-  console.log(result);
 
   return result;
 }

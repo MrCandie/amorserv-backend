@@ -9,13 +9,17 @@ const catch_async_1 = __importDefault(require("../utils/catch-async"));
 const book_model_1 = __importDefault(require("../models/book-model"));
 const file_upload_1 = __importDefault(require("../utils/file-upload"));
 exports.upload = (0, catch_async_1.default)(async (req, res, next) => {
-    const result = await (0, file_upload_1.default)(req, "milk", next);
+    const { type } = req.query;
+    if (!type) {
+        return next(new app_error_1.default("Provide a valid type", 400));
+    }
+    const result = await (0, file_upload_1.default)(req, "milk", next, type);
     if (!result) {
         return next(new app_error_1.default("Upload a valid file", 400));
     }
     return res.status(201).json({
         status: "Success",
-        data: result.secure_url,
+        data: result,
     });
 });
 exports.createBook = (0, catch_async_1.default)(async (req, res, next) => {
@@ -39,7 +43,7 @@ exports.createBook = (0, catch_async_1.default)(async (req, res, next) => {
     });
 });
 exports.listBooks = (0, catch_async_1.default)(async (req, res, next) => {
-    const list = await book_model_1.default.find().select("name author url cover_url category");
+    const list = await book_model_1.default.find().select("name author url cover_url category createdAt updatedAt");
     return res.status(200).json({
         status: "Success",
         data: list,

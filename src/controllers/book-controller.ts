@@ -15,7 +15,7 @@ export const upload = catchAsync(
 
     return res.status(201).json({
       status: "Success",
-      data: result.secure_url,
+      data: result,
     });
   }
 );
@@ -49,7 +49,9 @@ export const createBook = catchAsync(
 
 export const listBooks = catchAsync(
   async (req: AuthRequest, res: Response, next: NextFunction) => {
-    const list = await Book.find().select("name author url cover_url category");
+    const list = await Book.find().select(
+      "name author url cover_url category createdAt updatedAt"
+    );
 
     return res.status(200).json({
       status: "Success",
