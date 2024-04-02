@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const cloudinary_1 = require("cloudinary");
 const app_error_1 = __importDefault(require("./app-error"));
-async function uploadFile(req, folder, next, type) {
+async function uploadFile(req, folder, next) {
     let result;
     console.log(req.files);
     if (req.files) {

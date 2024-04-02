@@ -15,7 +15,7 @@ export const upload = catchAsync(
 
     return res.status(201).json({
       status: "Success",
-      data: result,
+      data: { url: result.secure_url, pages: result.pages },
     });
   }
 );

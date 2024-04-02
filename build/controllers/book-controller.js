@@ -9,17 +9,13 @@ const catch_async_1 = __importDefault(require("../utils/catch-async"));
 const book_model_1 = __importDefault(require("../models/book-model"));
 const file_upload_1 = __importDefault(require("../utils/file-upload"));
 exports.upload = (0, catch_async_1.default)(async (req, res, next) => {
-    const { type } = req.query;
-    if (!type) {
-        return next(new app_error_1.default("Provide a valid type", 400));
-    }
-    const result = await (0, file_upload_1.default)(req, "milk", next, type);
+    const result = await (0, file_upload_1.default)(req, "milk", next);
     if (!result) {
         return next(new app_error_1.default("Upload a valid file", 400));
     }
     return res.status(201).json({
         status: "Success",
-        data: result,
+        data: { url: result.secure_url, pages: result.pages },
     });
 });
 exports.createBook = (0, catch_async_1.default)(async (req, res, next) => {
