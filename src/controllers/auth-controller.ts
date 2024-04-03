@@ -6,6 +6,7 @@ import Email from "../utils/send-email";
 import verifyToken from "../utils/verifyToken";
 import createSendToken from "../utils/createAuthToken";
 import OTP from "../models/token-model";
+import { AuthRequest } from "../constants/interface/authRequestInterface";
 
 export const signup = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -121,6 +122,45 @@ export const resetPassword = catchAsync(
     return res.status(200).json({
       status: "Success",
       message: "Password reset successful",
+    });
+  }
+);
+
+export const getUser = catchAsync(
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const user = await User.findById(req.user.id).select(
+      "name email linkedin website twitter"
+    );
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+
+    return res.status(200).json({
+      status: "Success",
+      data: user,
+    });
+  }
+);
+
+export const editProfile = catchAsync(
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { name, linkedin, website, twitter } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { name, linkedin, website, twitter },
+      {
+        runValidators: true,
+        new: true,
+      }
+    ).select("name email linkedin website twitter");
+    if (!user) {
+      return next(new AppError("User not found", 404));
+    }
+
+    return res.status(200).json({
+      status: "Success",
+      data: user,
     });
   }
 );

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.login = exports.signup = void 0;
+exports.editProfile = exports.getUser = exports.resetPassword = exports.forgotPassword = exports.login = exports.signup = void 0;
 const user_model_1 = __importDefault(require("../models/user-model"));
 const app_error_1 = __importDefault(require("../utils/app-error"));
 const catch_async_1 = __importDefault(require("../utils/catch-async"));
@@ -82,5 +82,29 @@ exports.resetPassword = (0, catch_async_1.default)(async (req, res, next) => {
     return res.status(200).json({
         status: "Success",
         message: "Password reset successful",
+    });
+});
+exports.getUser = (0, catch_async_1.default)(async (req, res, next) => {
+    const user = await user_model_1.default.findById(req.user.id).select("name email linkedin website twitter");
+    if (!user) {
+        return next(new app_error_1.default("User not found", 404));
+    }
+    return res.status(200).json({
+        status: "Success",
+        data: user,
+    });
+});
+exports.editProfile = (0, catch_async_1.default)(async (req, res, next) => {
+    const { name, linkedin, website, twitter } = req.body;
+    const user = await user_model_1.default.findByIdAndUpdate(req.user.id, { name, linkedin, website, twitter }, {
+        runValidators: true,
+        new: true,
+    }).select("name email linkedin website twitter");
+    if (!user) {
+        return next(new app_error_1.default("User not found", 404));
+    }
+    return res.status(200).json({
+        status: "Success",
+        data: user,
     });
 });
